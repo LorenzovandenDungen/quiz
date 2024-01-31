@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 /**
  * QuizController implements the CRUD actions for quiz model.
  */
+
 class QuizController extends Controller
 {
     /**
@@ -27,9 +28,26 @@ class QuizController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                'corsFilter' => [
+                    'class' => \yii\filters\Cors::className(),
+                    'cors' => [
+                        'Origin' => static::allowedDomains(),
+                        'Access-Control-Request-Method' => ['GET', 'POST'],
+                        'Access-Control-Request-Headers' => ['*'],
+                    ],
+                ],
             ]
         );
     }
+    
+    public static function allowedDomains()
+    {
+        return [
+            'http://localhost:3000',
+            'http://test2.example.com',
+        ];
+    }
+    
 
     /**
      * Lists all quiz models.
@@ -132,3 +150,5 @@ class QuizController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
+
+
