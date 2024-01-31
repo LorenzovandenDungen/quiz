@@ -2,43 +2,42 @@
 
 namespace app\controllers;
 
-use app\models\quiz;
+use app\models\Quiz; // Corrected model name
 use app\models\QuizSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
-/**
- * QuizController implements the CRUD actions for quiz model.
- */
+use yii\filters\Cors;
 
 class QuizController extends Controller
 {
     /**
      * @inheritDoc
      */
-    public function behaviors()
-    {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-                'corsFilter' => [
-                    'class' => \yii\filters\Cors::className(),
-                    'cors' => [
-                        'Origin' => static::allowedDomains(),
-                        'Access-Control-Request-Method' => ['GET', 'POST'],
-                        'Access-Control-Request-Headers' => ['*'],
-                    ],
-                ],
-            ]
-        );
-    }
+
+     public function behaviors()
+     {
+         return array_merge(
+             parent::behaviors(),
+             [
+                 'verbs' => [
+                     'class' => VerbFilter::className(),
+                     'actions' => [
+                         'delete' => ['POST'],
+                     ],
+                 ],
+                 'corsFilter' => [
+                     'class' => Cors::className(),
+                     'cors' => [
+                         'Origin' => static::allowedDomains(),
+                         'Access-Control-Request-Method' => ['GET', 'POST'],
+                         'Access-Control-Request-Headers' => ['*'],
+                     ],
+                 ],
+             ]
+         );
+     }
     
     public static function allowedDomains()
     {
@@ -47,7 +46,13 @@ class QuizController extends Controller
             'http://test2.example.com',
         ];
     }
-    
+    public function actionApiGet() 
+    {
+        $sql = "SELECT vraag, antwoord1, antwoord2, antwoord3, antwoord4, juiste_antwoord FROM quiz";
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        return $result;
+    }
 
     /**
      * Lists all quiz models.
